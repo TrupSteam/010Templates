@@ -1,0 +1,96 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: Based on "lua_src_4\src\luac\dump.c" and "lua_src_4\src\luac\lobject.h"
+//------------------------------------------------
+
+typedef struct {
+    char signature[4] <format=hex>;   //".lua"
+    if (Memcmp(signature, "\033Lua", 4) != 0) {
+            Warning("Error signature.");
+    }
+    uchar version <format=hex>;
+    uchar endian <comment = "1 == LittleEndian; 0 == BigEndian">;
+    uchar size_int <comment = "sizeof(int)">;
+    uchar size_size_t <comment = "sizeof(size_t)">;
+    uchar size_Instruction <comment = "sizeof(Instruction)">;
+    uchar SIZE_INSTRUCTION <comment = "SIZE_INSTRUCTION">;
+    uchar SIZE_OP <comment = "SIZE_OP">;
+    uchar SIZE_B <comment = "SIZE_B">;
+    uchar sizeof_number <comment = "sizeof(Number)">;
+    uchar TEST_NUMBER[sizeof_number];
+} LuaHeader;
+
+typedef struct {
+    //uchar size_of_block[header.size_size_t];  
+    uint32 size_of_block;
+    char block[size_of_block];
+} LuaString <read=ReadLuaString>;
+
+string ReadLuaString( LuaString& val )
+{
+   return val.block;
+}
+
+typedef struct {
+    LuaString name;
+    uint32 startpc;
+    uint32 endpc;
+} LocalOne;
+
+typedef struct {
+    uint32 nlocvars;
+    local uint32 sz = nlocvars;
+    while (sz-- > 0) LocalOne loc;
+} LocalsAll;
+
+typedef struct {
+    uint32 nlineinfo;
+    if(nlineinfo) uint32 line[nlineinfo];
+} LuaLines;
+
+//forward declaration
+struct LuaFunction;
+
+struct LuaConstants{
+    uint32 nkstr <comment = "Count of strings used by the function">; 
+    local uint32 sz = nkstr;
+    while (sz-- > 0) LuaString constant;
+
+    uint32 nknum  <comment = "Count of numbers used by the function">; 
+    if(nknum) uint32 some[nknum];
+
+    uint32 nkproto <comment = "Count of functions defined inside the function">; 
+    local uint32 sz2 = nkproto;
+    while (sz2-- > 0) LuaFunction func;
+};
+
+struct LuaCode{
+    uint32 ncode;
+    // Printf("%d",header.SIZE_INSTRUCTION);
+    if(ncode == 0) return;
+    if(header.SIZE_INSTRUCTION == 16 ) uint16 Instruction[ncode];
+    if(header.SIZE_INSTRUCTION == 32 ) uint32 Instruction[ncode];
+};
+
+struct LuaFunction{
+    LuaString name; 
+    uint32 lineDefined;
+    uint32 numparams;
+    uchar  is_vararg;
+    uint32 maxstacksize;
+    LocalsAll locals; 
+    LuaLines lines <comment = "Map from opcodes to source lines">;
+    LuaConstants constants; 
+    LuaCode code;
+};
+
+LuaHeader header;
+LuaFunction function;
