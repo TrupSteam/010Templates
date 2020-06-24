@@ -2,11 +2,11 @@
 //--- 010 Editor v9.0 Binary Template
 //
 //      File: 
-//   Authors: 
-//   Version: 
-//   Purpose: 
+//   Authors: https://github.com/TrupSteam/
+//   Version: 15.10.18
+//   Purpose: Unpack lua4
 //  Category: 
-// File Mask: 
+// File Mask: *.LUB
 //  ID Bytes: 
 //   History: Based on "lua_src_4\src\luac\dump.c" and "lua_src_4\src\luac\lobject.h"
 //------------------------------------------------
