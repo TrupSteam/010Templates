@@ -1,0 +1,35 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: DFF
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: Psychnoaurs Font
+//------------------------------------------------
+
+DWORD magic; // FFFD
+DWORD header_size;
+DWORD symbols_num;
+BYTE char_map[256];
+
+struct XY
+{
+    WORD x_start;
+    WORD y_start;
+    WORD x_end;
+    WORD y_end;
+    WORD base_x;
+    WORD base_y;
+};
+
+XY coord[symbols_num] <fgcolor=0x00FF00>;
+
+DWORD unk_3;
+DWORD img_width;
+DWORD img_height;
+BYTE image[img_width * img_height];
+
